@@ -152,7 +152,11 @@ public class CamelotGame {
             gui.refreshGrid(this);
             this.display();
         }
-        else System.out.println("\nincorrect move\n");
+        else
+        {
+            System.out.println("\nincorrect move\n");
+            gui.refreshGrid(this);
+        }
     }
     
     Piece getPiece(int row,int col)

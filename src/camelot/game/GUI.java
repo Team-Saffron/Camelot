@@ -9,45 +9,36 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.Border;
 
 /**
  *
  * @author aakashtyagi
  */
-public class GUI extends JFrame implements ActionListener{
+public class GUI extends JFrame implements MouseListener{
     
     public JButton[][] JButtonArr;
     ImageIcon blackPawn,blackKnight,whitePawn,whiteKnight,castle1,castle2;
     public int moveFlag;
     public CamelotGame game;
-    Move move;
-    
+    Move move = new Move();
+  
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
         JButton btn;
+        //System.out.println("In button 1");
         int var;
         btn = JButtonArr[1][1];
         if(e.getSource() == JButtonArr[1][1])
         {
-            moveFlag = ((moveFlag == 1) ? 0 : 1);
-            btn.setText((moveFlag == 1) ? "S" : "M");
-            if(moveFlag == 0)
-            {
-                // add code here
-                game.singleMove(move);
-                if(game.checkState() == 0)
-                    game.declareWinner();
-            }
-            else
-            {
-                move = new Move();
-            }
-            return ;
+            move = new Move();
+            refreshGrid(game);
         }
         else
         {
@@ -60,11 +51,19 @@ public class GUI extends JFrame implements ActionListener{
                     btn = JButtonArr[i][j];
                     if(e.getSource() == btn)
                     {
-                        if(moveFlag == 1)
+                        Border border = BorderFactory.createBevelBorder(1, Color.RED, Color.RED);
+                        btn.setBorder(border);
+                        move.chance.add(new Position(i,j));
+                        move.chanceCnt++;
+                        if( MouseEvent.BUTTON3 == e.getButton())
                         {
-                            move.chance.add(new Position(i,j));
-                            move.chanceCnt++;
+                            System.out.println("In right click");
+                            game.singleMove(move);
+                            if(game.checkState() == 0)
+                                game.declareWinner();
+                            move = new Move();
                         }
+                        
                     }
                 }
             }
@@ -74,16 +73,15 @@ public class GUI extends JFrame implements ActionListener{
     public GUI(int rows, int cols) {
         moveFlag = 0;
         JButtonArr = new JButton[rows+1][cols+1];
-        blackPawn = new ImageIcon("src/images/blackPawn.png");
-        whitePawn = new ImageIcon("src/images/whitePawn.png");
-        blackKnight = new ImageIcon("src/images/blackKnight.png");
-        whiteKnight = new ImageIcon("src/images/whiteKnight.png");
+        blackPawn = new ImageIcon("src/images/Black_Pawn.png");
+        whitePawn = new ImageIcon("src/images/White_Pawn.png");
+        blackKnight = new ImageIcon("src/images/Black_Knight.png");
+        whiteKnight = new ImageIcon("src/images/White_Knight.png");
         castle1 = new ImageIcon("src/images/castle1.png");
         castle2 = new ImageIcon("src/images/castle2.png");
         int i,j;
         Container pane = getContentPane();
         pane.setLayout(new GridLayout(rows, cols));
-        //ImageIcon pawn = new ImageIcon("src/images/blackKnight.png");
         for (i = 1; i <= 16; i++) {
             for(j = 1 ; j <= 12 ; j++)
             {
@@ -93,12 +91,12 @@ public class GUI extends JFrame implements ActionListener{
                 JButtonArr[i][j] = button;
                 pane.add(button);
 
-                button.addActionListener(this);
+                button.addMouseListener(this);
             }
         }
         JButton btn;
         btn = JButtonArr[1][1];
-        btn.setText("M");
+        btn.setText("Cancel");
     }
     
     public void init(CamelotGame cg)
@@ -122,7 +120,9 @@ public class GUI extends JFrame implements ActionListener{
                 
                 btn = JButtonArr[i][j];
                 v = (i%2) ^ (j%2);
-                
+                Border defaultBorder = BorderFactory.createBevelBorder(1);
+                btn.setBorder(defaultBorder);
+
                 if(v == 1)
                     btn.setBackground(Color.YELLOW);
                 else btn.setBackground(Color.CYAN);
@@ -143,7 +143,10 @@ public class GUI extends JFrame implements ActionListener{
                 {
                     assignPiece(btn,pc);
                 }
-                else btn.setIcon(null);
+                else
+                {
+                    btn.setIcon(null);
+                }
             }
         }
     }
@@ -158,6 +161,26 @@ public class GUI extends JFrame implements ActionListener{
         {
             btn.setIcon((pc.isKnight == 1 ? whiteKnight : whitePawn));
         }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
   
