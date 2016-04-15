@@ -5,6 +5,8 @@
  */
 package camelot.game;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author aakashtyagi
@@ -14,7 +16,70 @@ public class Piece {
     public String id;
     public int isKnight;
     public Position pos;
+    int []Left = {1, 1, 1, -1, -1, -1, 0, 0};
+    int []Up = {0, 1, -1, 0, 1, -1, 1, -1};
+    ArrayList<Move> getValidMoves(String state)
+    {
+        ArrayList<Move> moves  = new ArrayList<>();
+        int i, occupiedBy;
+        Move temp = new Move();
+        temp.chance.add(pos);
+        
+        for(i=0; i<8; i++)
+        {
+            if(isValid(pos.row + Up[i], pos.col + Left[i]))
+            {
+                if(0 == (occupiedBy = isOccupied(state, pos.row + Up[i], pos.col + Left[i])))
+                {
+                    temp.chance.add(new Position(pos.row + Up[i], pos.col + Left[i]));
+                    moves.add(temp);
+                    temp.chance.remove(temp.chance.size() - 1);
+                }
+                else
+                {
+                    temp.chance.add(new Position(pos.row + Up[i] + Up[i], pos.col + Left[i] + Left[i]));
+                    String newState = updateState(state, pos.row + Up[i] + Up[i], pos.col + Left[i] + Left[i]);
+                    moves.add(temp);
+                    if(occupiedBy == color)
+                    {
+                        canter(temp, newState, moves);
+                    }
+                    else
+                    {
+                        leap(temp, newState, moves);
+                    }
+                    temp.chance.remove(temp.chance.size() - 1);
+                }
+                    
+         
+            }
+            
+        }
+        return moves;
+    }
+    String updateState(String state, int row, int col)
+    {
+        String newState = new String();
+        return newState;
+    }
     
+    void canter(Move temp, String newState, ArrayList<Move> moves)
+    {
+        
+    }
+    
+    void leap(Move temp, String newState, ArrayList<Move> moves)
+    {
+        
+    }
+    boolean isValid(int row, int col)
+    {
+        return true;
+    }
+    int isOccupied(String state, int row, int col)
+    {
+        return false;
+    }
     public Piece()
     {
         id="";

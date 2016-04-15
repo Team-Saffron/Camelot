@@ -21,6 +21,17 @@ public class CamelotGame {
     public Move curMove;
     public Player player1,player2;
     public GUI gui;
+    double hashValue;
+
+    public double getHashValue() {
+        hashValue = getHash();
+        return hashValue;
+    }
+    
+    public double getHash() {
+        double Hash=0.0;
+        return Hash;
+    }
     public CamelotGame()
     {
         turn = 0;
