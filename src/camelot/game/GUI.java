@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,10 +25,12 @@ import javax.swing.border.Border;
 public class GUI extends JFrame implements MouseListener{
     
     public JButton[][] JButtonArr;
-    ImageIcon blackPawn,blackKnight,whitePawn,whiteKnight,castle1,castle2;
+    ImageIcon blackPawn, blackKnight, whitePawn, whiteKnight, castle1, castle2;
+    public ArrayList<Piece> deadPieceList;
     public int moveFlag;
     public CamelotGame game;
     Move move = new Move();
+    int flag=0;
   
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -40,6 +43,25 @@ public class GUI extends JFrame implements MouseListener{
             move = new Move();
             refreshGrid(game);
         }
+        else if(e.getSource() == JButtonArr[2][1])
+        {
+            System.out.println(flag);
+            game.revertMove(move, deadPieceList);
+            refreshGrid(game);
+        }
+        else if(e.getSource() == JButtonArr[3][1])
+        {
+            move = new Move();
+            deadPieceList = new ArrayList<>();
+            Piece piece;
+            int i,j;
+       
+            move = MiniMax.Maxi(2,game).move;
+            deadPieceList = game.singleMove(move);
+            //refreshGrid(game);
+            if(game.checkState() == 0)
+                game.declareWinner();
+        }
         else
         {
             
@@ -48,9 +70,18 @@ public class GUI extends JFrame implements MouseListener{
             {
                 for(j=1;j<=12;j++)
                 {
+                   
                     btn = JButtonArr[i][j];
                     if(e.getSource() == btn)
                     {
+                         if(flag == 0)
+                        {
+                            // First Click
+
+                            System.out.println("HERE"+i+":"+j);
+                            move = new Move();
+                            flag = 1;
+                        }
                         Border border = BorderFactory.createBevelBorder(1, Color.RED, Color.RED);
                         btn.setBorder(border);
                         move.chance.add(new Position(i,j));
@@ -58,10 +89,11 @@ public class GUI extends JFrame implements MouseListener{
                         if( MouseEvent.BUTTON3 == e.getButton())
                         {
                             System.out.println("In right click");
-                            game.singleMove(move);
+                            flag = 0;
+                            deadPieceList = game.singleMove(move);
                             if(game.checkState() == 0)
                                 game.declareWinner();
-                            move = new Move();
+                            
                         }
                         
                     }
@@ -90,13 +122,16 @@ public class GUI extends JFrame implements MouseListener{
                 //button.setIcon(pawn);
                 JButtonArr[i][j] = button;
                 pane.add(button);
-
                 button.addMouseListener(this);
             }
         }
         JButton btn;
         btn = JButtonArr[1][1];
         btn.setText("Cancel");
+        btn = JButtonArr[2][1];
+        btn.setText("U");
+        btn = JButtonArr[3][1];
+        btn.setText("AI");
     }
     
     public void init(CamelotGame cg)
@@ -141,10 +176,11 @@ public class GUI extends JFrame implements MouseListener{
                 pc = cg.getPiece(i,j);
                 if(pc != null)
                 {
-                    assignPiece(btn,pc);
+                    assignPiece(btn, pc);
                 }
                 else
                 {
+                    if(cg.grid[i][j].castle != 1)
                     btn.setIcon(null);
                 }
             }
@@ -185,6 +221,31 @@ public class GUI extends JFrame implements MouseListener{
     
   
     
-    
-    
+    public void refreshGridUtil(CamelotGame cg)
+    {
+        game = cg;
+        int i,j;
+        JButton btn;
+        Piece pc;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                btn = JButtonArr[i][j];
+                Border defaultBorder = BorderFactory.createBevelBorder(1);
+                btn.setBorder(defaultBorder);
+                pc = cg.getPiece(i,j);
+                if(pc != null)
+                {
+                    pc.pos = new Position(i,j);
+                    assignPiece(btn,pc);
+                }
+                else 
+                {
+                    if(cg.grid[i][j].castle == 0)
+                    btn.setIcon(null);
+                }
+            }
+        }
+    }  
 }

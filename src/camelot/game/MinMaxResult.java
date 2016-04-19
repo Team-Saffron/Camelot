@@ -9,10 +9,18 @@ package camelot.game;
  *
  * @author Abhishek
  */
-public class GuiBuilder {
+public class MinMaxResult {
     
-    public GuiBuilder()
+    Move move;
+    double val;
+    MinMaxResult()
     {
-        
+ 
     }
+    MinMaxResult(Move move, double val)
+    {
+        this.move = move;
+        this.val = val;
+    }
+    
 }

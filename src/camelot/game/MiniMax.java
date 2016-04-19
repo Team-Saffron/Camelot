@@ -9,31 +9,18 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Abhishek
+ * @author aakashtyagi
  */
-class MinMaxResult
-{
-    Move move;
-    double val;
-    MinMaxResult()
-    {
-        
-    }
-    MinMaxResult(Move move, double val)
-    {
-        this.move = move;
-        this.val = val;
-    }
-}
-
 public class MiniMax {
- 
-    public MinMaxResult Mini(int depth, CamelotGame cg){
+    
+    public static MinMaxResult Mini(int depth, CamelotGame cg){
+        cg.cnt++;
         int i, j;
-        if (depth == 0){
-            return new MinMaxResult(null, cg.getHashValue());
+        double INF = 1000000000;
+        if (depth == 0) {
+            return new MinMaxResult(null, cg.getBoundingValue());
         }
-        MinMaxResult res = new MinMaxResult(null, 0.0);
+        MinMaxResult res = new MinMaxResult(null, INF);
         ArrayList<Move> moveList = new ArrayList<>();
         Piece piece;
         //For all valid moves
@@ -41,32 +28,38 @@ public class MiniMax {
             for(j=1; j<=12; j++){
                 if(null != (piece = cg.getPiece(i, j)))
                 {
-                    Merge(moveList, piece.getValidMoves(getHash(cg)));
+                    if(piece.color == 1)
+                    Merge(moveList, piece.getAllMoves(cg));
+                    //moveList.addAll(piece.getAllMoves(cg));
                 }
             }
         }
         
-        // Applying Max algo on obtained Moves
         for(Move move : moveList)
         {
-            cg.singleMove(move);            
+            //CamelotGame prevState = new CamelotGame(cg);
+            ArrayList<Piece> deadPieces = new ArrayList<Piece>();
+            deadPieces = cg.singleMove(move);            
             MinMaxResult tempres = Maxi(depth-1, cg);
             if(tempres.val < res.val)
             {
                 res.val = tempres.val;
                 res.move = move;
             }
-            cg.revertMove(move);
+            cg.revertMove(move,deadPieces);
         }
+           
         return res;
     }
-    
-    public MinMaxResult Maxi(int depth, CamelotGame cg){
+ 
+    public static MinMaxResult Maxi(int depth, CamelotGame cg){
         int i, j;
+        cg.cnt++;
         if (depth == 0){
-            return new MinMaxResult(null, cg.getHashValue());
+            return new MinMaxResult(null, cg.getBoundingValue());
         }
-        MinMaxResult res = new MinMaxResult(null, 0.0);
+        double INF = 1000000000;
+        MinMaxResult res = new MinMaxResult(null, -INF);
         ArrayList<Move> moveList = new ArrayList<>();
         Piece piece;
         //For all valid moves
@@ -74,28 +67,35 @@ public class MiniMax {
             for(j=1; j<=12; j++){
                 if(null != (piece = cg.getPiece(i, j)))
                 {
-                    Merge(moveList, piece.getValidMoves(getHash(cg)));
+                    if(piece.color == 0)
+                    Merge(moveList, piece.getAllMoves(cg));
                 }
             }
         }
+        //if(depth == 1)
+        System.out.println("MoveSize" + moveList.size());
         
         // Applying Max algo on obtained Moves
+        
         for(Move move : moveList)
         {
-            cg.singleMove(move);            
+            ArrayList<Piece> deadPieces = new ArrayList<Piece>();
+            deadPieces = cg.singleMove(move); 
+            //deadPieces = cg.singleMove(move);            
             MinMaxResult tempres = Mini(depth-1, cg);
             if(tempres.val > res.val)
             {
                 res.val = tempres.val;
                 res.move = move;
             }
-            cg.revertMove(move);
+            cg.revertMove(move,deadPieces);
         }
+        
         return res;
     }
-    void Merge(ArrayList<Move> moveList, ArrayList<Move> pieceList)
+    public static void Merge(ArrayList<Move> moveList, ArrayList<Move> pieceList)
     {
-        
+        moveList.addAll(pieceList);
     }
     String getHash(CamelotGame cg)
     {
