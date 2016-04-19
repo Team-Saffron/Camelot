@@ -55,10 +55,10 @@ public class GUI extends JFrame implements MouseListener{
             deadPieceList = new ArrayList<>();
             Piece piece;
             int i,j;
-       
+            
             move = MiniMax.Maxi(2,game).move;
             deadPieceList = game.singleMove(move);
-            //refreshGrid(game);
+            
             if(game.checkState() == 0)
                 game.declareWinner();
         }
@@ -140,6 +140,7 @@ public class GUI extends JFrame implements MouseListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+        refreshGridUtil(game);
     }
     
     public void refreshGrid(CamelotGame cg)
