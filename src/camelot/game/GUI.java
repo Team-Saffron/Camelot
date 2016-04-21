@@ -45,7 +45,6 @@ public class GUI extends JFrame implements MouseListener{
         }
         else if(e.getSource() == JButtonArr[2][1])
         {
-            System.out.println(flag);
             game.revertMove(move, deadPieceList);
             refreshGrid(game);
         }
@@ -56,7 +55,7 @@ public class GUI extends JFrame implements MouseListener{
             Piece piece;
             int i,j;
             
-            move = MiniMax.Maxi(2,game).move;
+            move = MiniMax.Maxi(2, game).move;
             deadPieceList = game.singleMove(move);
             
             if(game.checkState() == 0)
@@ -77,8 +76,6 @@ public class GUI extends JFrame implements MouseListener{
                          if(flag == 0)
                         {
                             // First Click
-
-                            System.out.println("HERE"+i+":"+j);
                             move = new Move();
                             flag = 1;
                         }
@@ -88,7 +85,7 @@ public class GUI extends JFrame implements MouseListener{
                         move.chanceCnt++;
                         if( MouseEvent.BUTTON3 == e.getButton())
                         {
-                            System.out.println("In right click");
+                            //System.out.println("In right click");
                             flag = 0;
                             deadPieceList = game.singleMove(move);
                             if(game.checkState() == 0)

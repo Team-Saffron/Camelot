@@ -6,6 +6,8 @@
 package camelot.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -35,7 +37,13 @@ public class MiniMax {
                 }
             }
         }
-        
+        Collections.sort(moveList, new CustomComparatorLess());
+        /*
+        for(Move move : moveList)
+        {
+            System.out.println("ChanceCnt: " + move.chanceCnt);
+        }
+        */
         for(Move move : moveList)
         {
             //CamelotGame prevState = new CamelotGame(cg);
@@ -82,13 +90,20 @@ public class MiniMax {
                 }
             }
         }
-        //if(depth == 1)
-        System.out.println("MoveSize" + moveList.size());
         
         // Applying Max algo on obtained Moves
-        
+        /*
+        System.out.println("STARTBREAK");
+        Collections.sort(moveList, new CustomComparatorMore());
         for(Move move : moveList)
         {
+            System.out.println("ChanceCnt: " + move.chanceCnt);
+        }
+        System.out.println("ENDBREAK");
+        */
+        for(Move move : moveList)
+        {
+            
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
             deadPieces = cg.singleMove(move); 
             //deadPieces = cg.singleMove(move);            
@@ -96,7 +111,8 @@ public class MiniMax {
             
             if(tempres.val >= beta)
             {
-                res.move = move;res.val = beta;
+                res.move = move;
+                res.val = beta;
                 cg.revertMove(move,deadPieces);
                 return res;
             }
@@ -125,4 +141,16 @@ public class MiniMax {
         return hashValue;
     }
     
+}
+class CustomComparatorMore implements Comparator<Move> {
+    @Override
+    public int compare(Move o1, Move o2) {
+        return o2.chanceCnt - o1.chanceCnt;
+    }
+}
+class CustomComparatorLess implements Comparator<Move> {
+    @Override
+    public int compare(Move o1, Move o2) {
+        return o1.chanceCnt - o2.chanceCnt;
+    }
 }

@@ -299,16 +299,19 @@ public class Piece {
         for(i=0;i<temp.size();i++)
         {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
-            if(tempMove.checkMove(cg) == 1)
+            //if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+           // else System.out.println("wrong move");
             pos = new Position(temp.get(i));
             getAllCanterMovesUtil(cg);
             tempMove.popBack();
         }
         if(isKnight == 1)
         {
-        temp = getNextJumpMoves();/*
+         pos = new Position(tempPos);
+         temp = getNextJumpMoves();
+        
+        /*
         System.out.println("start jump\n");
         for(i=0;i<temp.size();i++)
         System.out.println(temp.get(i).toString());
@@ -322,9 +325,9 @@ public class Piece {
             c = hash[z];
             hash[z] = 1;
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
-            if(tempMove.checkMove(cg) == 1)
+        //    if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+        //    else System.out.println("wrong move");
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();
@@ -344,24 +347,17 @@ public class Piece {
         int i,x,y,z,c;
         temp = new ArrayList<Position>();
         markInHash(pos);
-        temp = getNextPlainMoves(); /*
-        System.out.println("start plain\n");
-        for(i=0;i<temp.size();i++)
-        System.out.println(temp.get(i).toString());
-        System.out.println("plain\n");*/
+        temp = getNextPlainMoves(); 
            
         for(i=0;i<temp.size();i++)
         {
-            tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
+            tempMove.chance.add(new Position(temp.get(i)));
+            tempMove.chanceCnt++;
             validMoves.add(new Move(tempMove));
             tempMove.popBack();
         }
         
-        temp = getNextCanterMoves();/*
-        System.out.println("start canter\n");
-        for(i=0;i<temp.size();i++)
-        System.out.println(temp.get(i).toString());
-        System.out.println("canter\n");*/
+        temp = getNextCanterMoves();
         
         for(i=0;i<temp.size();i++)
         {
@@ -374,11 +370,7 @@ public class Piece {
             tempMove.popBack();
         }
         pos = new Position(tempPos);
-        temp = getNextJumpMoves();/*
-        System.out.println("start jump\n");
-        for(i=0;i<temp.size();i++)
-        System.out.println(temp.get(i).toString());
-        System.out.println("jump\n");*/
+        temp = getNextJumpMoves();
         
         for(i=0;i<temp.size();i++)
         {

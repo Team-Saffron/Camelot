@@ -7,7 +7,6 @@ package camelot.game;
 
 import java.util.ArrayList;
 
-
 /**
  *
  * @author aakashtyagi
@@ -47,7 +46,7 @@ public class CamelotGame {
         }
         for(j=2;j<=11;j++)
         {
-            grid[3][j].valid =grid[14][j].valid = 1;
+            grid[3][j].valid = grid[14][j].valid = 1;
         }
         for(j=3;j<=10;j++)
         {
@@ -79,7 +78,6 @@ public class CamelotGame {
     {
         int[] hash = new int[225];
         int top=1,i,j;
-        //System.out.println("\nhash\n");
         for(i=1;i<=16;i++)
         {
             for(j=1;j<=12;j++)
@@ -141,9 +139,9 @@ public class CamelotGame {
                         str = str + grid[i][j].piece.id;
                     }
                 }
-                System.out.print(str + " ");
+                //System.out.print(str + " ");
             }
-            System.out.println("\n");
+            //System.out.println("\n");
         }
     }
     /*
@@ -226,7 +224,7 @@ public class CamelotGame {
         }
         declareWinner();
     }
-    
+        
     public static void main(String[] args) {
         // TODO code application logic here
         CamelotGame game ;
@@ -237,8 +235,7 @@ public class CamelotGame {
         game.display();
         //game.play();
         //game.display();
-    }
-    
+    }   
     double distToCastle(int i,int j,int color)
     {
         double dist = 0;
@@ -252,7 +249,84 @@ public class CamelotGame {
         }
         return dist;
     }
+    /**
+     * 
+     * Strategic Bounding Function 
+     */
     double getBoundingValue() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
+        double diff,avgCastleDist;
+        Piece pc;
+        int i,j;
+        double minBlackOppCastle, minWhiteOppCastle, minWhiteSCastle, minBlackSCastle;
+        minBlackOppCastle = minWhiteOppCastle = minWhiteSCastle = minBlackSCastle= 100000000; 
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(pc.color == 0)
+                    {
+                        double dist = (distToCastle(i, j, 0)) * 0.5;
+                        double dist2 = ((distToCastle(i, j, 1)) * 0.5);
+                        castleDistWhite +=  dist;
+                        if(dist < minWhiteOppCastle)
+                        {
+                            minWhiteOppCastle = dist;
+                        }
+                        if(dist2 < minWhiteSCastle)
+                        {
+                            minWhiteSCastle = dist2;
+                        }
+                        if(pc.isKnight == 1)
+                            pieceCntWhite+=2;
+                        else
+                            pieceCntWhite++;
+                    }
+                    else{
+                        double dist = (distToCastle(i,j,1)) * 0.5;
+                        double dist2 = ((distToCastle(i,j,0)) * 0.5);
+                        castleDistBlack += (dist);
+                        if(dist2 < minBlackSCastle)
+                        {
+                            minBlackSCastle = dist2;
+                        }
+                        if(dist < minBlackOppCastle)
+                        {
+                            minBlackOppCastle = dist;
+                        }
+                        if(pc.isKnight == 1)
+                            pieceCntBlack+=2;
+                        else
+                            pieceCntBlack++;
+                    }
+                }
+            }
+        }
+        double temp = 0.0;
+        if(minWhiteSCastle > minBlackOppCastle)
+        {
+            temp -= 1000.0;
+        }
+        if(minBlackSCastle > minWhiteOppCastle)
+        {
+            temp += 1000.0;
+        }
+        avgCastleDist = (castleDistWhite + (4*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(4*minBlackOppCastle))/(pieceCntBlack+1);
+        diff = pieceCntWhite - pieceCntBlack;
+        res = diff*100 - avgCastleDist;
+        return temp + res;
+    }
+    
+    /**
+     * 
+     * Aggressive Bounding Function 
+     */
+    /*
+     double getBoundingValue() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
         double diff,avgCastleDist;
@@ -284,18 +358,18 @@ public class CamelotGame {
         /*
         if(turn == 0)
         return res;
-        else return (-res);*/
+        else return (-res);
         return res;
     }
 
+    */
     void revertMove(Move move, ArrayList<Piece> deadPieces) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         int i,x,y;
         Piece pc;
-        System.out.println(deadPieces.size());
+      
         for(i=0;i<deadPieces.size();i++)
         {
-            System.out.println("sdf");
             pc = deadPieces.get(i);
             x = pc.pos.row;
             y = pc.pos.col;

@@ -6,6 +6,7 @@
 package camelot.game;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 
@@ -122,7 +123,7 @@ public class Move {
         }
                 
         display();*/
-        Piece p,deadPiece;
+        Piece p, deadPiece;
         ArrayList<Piece> deadPieceList = new ArrayList<Piece>();
         int x,y,x2,y2;
         x = chance.get(0).row;
@@ -136,7 +137,7 @@ public class Move {
             cg.grid[x][y].piece = null;
             cg.grid[x][y].empty = 1;
             refreshPiece(p);
-            p.pos = new Position(x2,y2);
+            p.pos = new Position(x2, y2);
             cg.grid[x2][y2].piece = p; 
             cg.grid[x2][y2].empty = 0;
         }
