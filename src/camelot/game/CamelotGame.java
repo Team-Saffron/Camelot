@@ -7,6 +7,7 @@ package camelot.game;
 
 import java.util.ArrayList;
 
+
 /**
  *
  * @author aakashtyagi
@@ -22,10 +23,13 @@ public class CamelotGame {
     public Move curMove;
     public Player player1,player2;
     public GUI gui;
-    public int cnt;
+    public int cnt,gameOver,winner;
     public CamelotGame()
     {
-        cnt = 0;
+        player1 = new Player("AI");
+        player2 = new Player("Guest");
+        winner = -1;
+        cnt = gameOver=0;
         turn = 0;
         int i,j;
         grid = new Cell[17][13];
@@ -46,7 +50,7 @@ public class CamelotGame {
         }
         for(j=2;j<=11;j++)
         {
-            grid[3][j].valid = grid[14][j].valid = 1;
+            grid[3][j].valid =grid[14][j].valid = 1;
         }
         for(j=3;j<=10;j++)
         {
@@ -78,6 +82,7 @@ public class CamelotGame {
     {
         int[] hash = new int[225];
         int top=1,i,j;
+        //System.out.println("\nhash\n");
         for(i=1;i<=16;i++)
         {
             for(j=1;j<=12;j++)
@@ -139,9 +144,9 @@ public class CamelotGame {
                         str = str + grid[i][j].piece.id;
                     }
                 }
-                //System.out.print(str + " ");
+                System.out.print(str + " ");
             }
-            //System.out.println("\n");
+            System.out.println("\n");
         }
     }
     /*
@@ -166,32 +171,121 @@ public class CamelotGame {
     */
     public int checkState()
     {
+        int i,j,whitePcCnt=0,blackPcCnt=0;
+        Piece pc;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(grid[i][j].castle == 1)
+                    {
+                        if(i == 1 && pc.color == 1)
+                            return 0;
+                        if(i==16 && pc.color == 0)
+                            return 0;
+                    }
+                    if(pc.color == 0)
+                    {
+                        whitePcCnt++;
+                    }
+                    else blackPcCnt++;
+                }
+            }
+        }
+        if(whitePcCnt <2 || blackPcCnt < 2)
+            return 0;
         return 1;
     }
     
-    public void declareWinner()
+    public int declareWinner()
     {
-        
+        int i,j,whitePcCnt=0,blackPcCnt=0;
+        System.out.println("in winner");
+        Piece pc;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(grid[i][j].castle == 1)
+                    {
+                        if(i == 1 && pc.color == 1)
+                        {
+                            System.out.println("Winner is player 2");
+                            gameOver = 1;
+                            return 2;
+                        }
+                        if(i==16 && pc.color == 0)
+                        {
+                            System.out.println("Winner is player 1");
+                            gameOver = 1;
+                            return 1;
+                        }
+                    }
+                    if(pc.color == 0)
+                    {
+                        whitePcCnt++;
+                    }
+                    else blackPcCnt++;
+                }
+            }
+        }
+        if(whitePcCnt <2 && blackPcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("Game ends in a draw");
+            return 0;
+        }
+        else if(whitePcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("winner is player 2");
+            return 2;
+        }
+        else if(blackPcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("winner is player 1");
+            return 1;
+        }
+        return -1;
     }
     
-    public ArrayList<Piece> singleMove(Move move)
+    public ArrayList<Piece> singleMove(Move move,int realMove)
     {
+        if(realMove == 1 && gameOver == 1)
+        {
+            System.out.println("Sorry game is over");
+            return null;
+        }
         ArrayList<Piece> deadPieceList = new ArrayList<Piece>();
-        move.display();
+        //move.display();
         
         if(move.checkMove(this) == 1)
         {
             //System.out.println("\ncorrect move");
-            System.out.println("yes " + "cnt = " + cnt);
+            //System.out.println("yes " + "cnt = " + cnt);
             
             deadPieceList=move.executeMove(this);
             if(turn == 0) turn = 1;
             else turn = 0;
-            gui.refreshGridUtil(this);
+            //gui.refreshGridUtil(this);
+            //System.out.println("no");
             //display();
         }
-        else 
-            gui.refreshGridUtil(this);;//System.out.println("\nincorrect move");
+        else System.out.println("\nincorrect move");
+        if(realMove == 1)
+        {
+            if(gameOver == 0 && checkState() == 0)
+            {
+                winner = declareWinner();
+            }
+        }
         return deadPieceList;
     }
     
@@ -224,7 +318,7 @@ public class CamelotGame {
         }
         declareWinner();
     }
-        
+    
     public static void main(String[] args) {
         // TODO code application logic here
         CamelotGame game ;
@@ -235,7 +329,8 @@ public class CamelotGame {
         game.display();
         //game.play();
         //game.display();
-    }   
+    }
+    
     double distToCastle(int i,int j,int color)
     {
         double dist = 0;
@@ -249,10 +344,41 @@ public class CamelotGame {
         }
         return dist;
     }
-    /**
-     * 
-     * Strategic Bounding Function 
-     */
+    /*
+    double getBoundingValue() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
+        double diff,avgCastleDist;
+        Piece pc;
+        int i,j;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(pc.color == 0)
+                    {
+                        castleDistWhite += (distToCastle(i,j,0));
+                        pieceCntWhite++;
+                    }
+                    else{
+                        castleDistBlack += (distToCastle(i,j,1));
+                        pieceCntBlack++;
+                    }
+                }
+                
+            }
+        }
+        avgCastleDist = (castleDistWhite)/pieceCntWhite - castleDistBlack/pieceCntBlack;
+        diff = pieceCntWhite - pieceCntBlack;
+        res = diff*100 - avgCastleDist;
+        
+        return res;
+    }
+    */
+    
     double getBoundingValue() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
@@ -309,65 +435,22 @@ public class CamelotGame {
         double temp = 0.0;
         if(minWhiteSCastle > minBlackOppCastle)
         {
-            temp -= 1000.0;
+            temp -= 10000.0;
         }
         if(minBlackSCastle > minWhiteOppCastle)
         {
-            temp += 1000.0;
+            temp += 10000.0;
         }
-        avgCastleDist = (castleDistWhite + (4*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(4*minBlackOppCastle))/(pieceCntBlack+1);
+        avgCastleDist = (castleDistWhite + (2*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(2*minBlackOppCastle))/(pieceCntBlack+1);
         diff = pieceCntWhite - pieceCntBlack;
         res = diff*100 - avgCastleDist;
         return temp + res;
     }
-    
-    /**
-     * 
-     * Aggressive Bounding Function 
-     */
-    /*
-     double getBoundingValue() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
-        double diff,avgCastleDist;
-        Piece pc;
-        int i,j;
-        for(i=1;i<=16;i++)
-        {
-            for(j=1;j<=12;j++)
-            {
-                pc = getPiece(i,j);
-                if(pc!=null)
-                {
-                    if(pc.color == 0)
-                    {
-                        castleDistWhite += (distToCastle(i,j,0));
-                        pieceCntWhite++;
-                    }
-                    else{
-                        castleDistBlack += (distToCastle(i,j,1));
-                        pieceCntBlack++;
-                    }
-                }
-                
-            }
-        }
-        avgCastleDist = (castleDistWhite)/pieceCntWhite - castleDistBlack/pieceCntBlack;
-        diff = pieceCntWhite - pieceCntBlack;
-        res = diff*100 - avgCastleDist;
-        /*
-        if(turn == 0)
-        return res;
-        else return (-res);
-        return res;
-    }
 
-    */
     void revertMove(Move move, ArrayList<Piece> deadPieces) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         int i,x,y;
         Piece pc;
-      
         for(i=0;i<deadPieces.size();i++)
         {
             pc = deadPieces.get(i);
@@ -378,13 +461,22 @@ public class CamelotGame {
         x = move.chance.get(move.chance.size()-1).row;
         y = move.chance.get(move.chance.size()-1).col;
         pc = getPiece(x,y);
+        if(pc == null)
+        {
+            System.out.println("true");
+            display();
+            move.display();
+        }
         grid[x][y].setPiece(null);
+        grid[x][y].empty = 1;
         x = move.chance.get(0).row;
         y = move.chance.get(0).col;
         pc.pos = new Position(x,y);
         grid[x][y].setPiece(pc);
+        grid[x][y].empty = 0;
         turn = (turn == 0 ? 1 : 0);
         //display();
-        gui.refreshGridUtil(this);
+        //gui.refreshGridUtil(this);
     }
+    
 }

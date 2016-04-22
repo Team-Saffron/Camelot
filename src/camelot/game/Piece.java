@@ -183,82 +183,83 @@ public class Piece {
         hash[idx] = 1;
     }
     
-    int valid(int x,int y)
+    int valid(int x,int y,CamelotGame cg)
     {
-        if(x>=1 && y>=1 && x<=16 && y<=12)
+        if(x>=1 && y>=1 && x<=16 && y<=12 && cg.grid[x][y].valid == 1)
             return 1;
         return 0;
     }
-    int get(int x,int y)
+    int get(int x,int y,CamelotGame cg)
     {
-        if(valid(x,y) == 0)
+        if(valid(x,y,cg) == 0)
             return -1;
         int idx;
         idx = 12*(x-1) + y;
         idx = hash[idx];
         return idx;
     }
-    public ArrayList<Position> getNextPlainMoves()
+    public ArrayList<Position> getNextPlainMoves(CamelotGame cg)
     {
         ArrayList<Position> plainMove = new ArrayList<Position>();
         int x,y;
         x = pos.row;
         y = pos.col;
-        if(get(x+1,y) == 1) plainMove.add(new Position(x+1,y));
-        if(get(x+1,y-1) == 1) plainMove.add(new Position(x+1,y-1));
-        if(get(x,y-1) == 1) plainMove.add(new Position(x,y-1));
-        if(get(x-1,y-1) == 1) plainMove.add(new Position(x-1,y-1));
-        if(get(x-1,y) == 1) plainMove.add(new Position(x-1,y));
-        if(get(x-1,y+1) == 1) plainMove.add(new Position(x-1,y+1));
-        if(get(x,y+1) == 1) plainMove.add(new Position(x,y+1));
-        if(get(x+1,y+1) == 1) plainMove.add(new Position(x+1,y+1));
+        if(get(x+1,y,cg) == 1) plainMove.add(new Position(x+1,y));
+        if(get(x+1,y-1,cg) == 1) plainMove.add(new Position(x+1,y-1));
+        if(get(x,y-1,cg) == 1) plainMove.add(new Position(x,y-1));
+        if(get(x-1,y-1,cg) == 1) plainMove.add(new Position(x-1,y-1));
+        if(get(x-1,y,cg) == 1) plainMove.add(new Position(x-1,y));
+        if(get(x-1,y+1,cg) == 1) plainMove.add(new Position(x-1,y+1));
+        if(get(x,y+1,cg) == 1) plainMove.add(new Position(x,y+1));
+        if(get(x+1,y+1,cg) == 1) plainMove.add(new Position(x+1,y+1));
         return plainMove;
     }
     
-    public ArrayList<Position> getNextCanterMoves()
+    public ArrayList<Position> getNextCanterMoves(CamelotGame cg)
     {
         ArrayList<Position> canterMove = new ArrayList<Position>();
         int x,y,c;
         x = pos.row;
         y = pos.col;
         c = (color == 0) ? 3 : 4;
-        if(get(x+2,y) == 1 && get(x+1,y) == c) canterMove.add(new Position(x+2,y));
-        if(get(x+2,y-2) == 1 && get(x+1,y-1) == c) canterMove.add(new Position(x+2,y-2));
-        if(get(x,y-2) == 1 && get(x,y-1) == c) canterMove.add(new Position(x,y-2));
-        if(get(x-2,y-2) == 1 && get(x-1,y-1) == c) canterMove.add(new Position(x-2,y-2));
-        if(get(x-2,y) == 1 && get(x-1,y) == c) canterMove.add(new Position(x-2,y));
-        if(get(x-2,y+2) == 1 && get(x-1,y+1) == c) canterMove.add(new Position(x-2,y+2));
-        if(get(x,y+2) == 1 && get(x,y+1) == c) canterMove.add(new Position(x,y+2));
-        if(get(x+2,y+2) == 1 && get(x+1,y+1) == c) canterMove.add(new Position(x+2,y+2));
+        if(get(x+2,y,cg) == 1 && get(x+1,y,cg) == c) canterMove.add(new Position(x+2,y));
+        if(get(x+2,y-2,cg) == 1 && get(x+1,y-1,cg) == c) canterMove.add(new Position(x+2,y-2));
+        if(get(x,y-2,cg) == 1 && get(x,y-1,cg) == c) canterMove.add(new Position(x,y-2));
+        if(get(x-2,y-2,cg) == 1 && get(x-1,y-1,cg) == c) canterMove.add(new Position(x-2,y-2));
+        if(get(x-2,y,cg) == 1 && get(x-1,y,cg) == c) canterMove.add(new Position(x-2,y));
+        if(get(x-2,y+2,cg) == 1 && get(x-1,y+1,cg) == c) canterMove.add(new Position(x-2,y+2));
+        if(get(x,y+2,cg) == 1 && get(x,y+1,cg) == c) canterMove.add(new Position(x,y+2));
+        if(get(x+2,y+2,cg) == 1 && get(x+1,y+1,cg) == c) canterMove.add(new Position(x+2,y+2));
         return canterMove;
     }
     
-    public ArrayList<Position> getNextJumpMoves()
+    public ArrayList<Position> getNextJumpMoves(CamelotGame cg)
     {
         ArrayList<Position> jumpMove = new ArrayList<Position>();
         int x,y,c;
         x = pos.row;
         y = pos.col;
         c = (color == 0) ? 4 : 3;
-        if(get(x+2,y) == 1 && get(x+1,y) == c) jumpMove.add(new Position(x+2,y));
-        if(get(x+2,y-2) == 1 && get(x+1,y-1) == c) jumpMove.add(new Position(x+2,y-2));
-        if(get(x,y-2) == 1 && get(x,y-1) == c) jumpMove.add(new Position(x,y-2));
-        if(get(x-2,y-2) == 1 && get(x-1,y-1) == c) jumpMove.add(new Position(x-2,y-2));
-        if(get(x-2,y) == 1 && get(x-1,y) == c) jumpMove.add(new Position(x-2,y));
-        if(get(x-2,y+2) == 1 && get(x-1,y+1) == c) jumpMove.add(new Position(x-2,y+2));
-        if(get(x,y+2) == 1 && get(x,y+1) == c) jumpMove.add(new Position(x,y+2));
-        if(get(x+2,y+2) == 1 && get(x+1,y+1) == c) jumpMove.add(new Position(x+2,y+2));
+        if(get(x+2,y,cg) == 1 && get(x+1,y,cg) == c) jumpMove.add(new Position(x+2,y));
+        if(get(x+2,y-2,cg) == 1 && get(x+1,y-1,cg) == c) jumpMove.add(new Position(x+2,y-2));
+        if(get(x,y-2,cg) == 1 && get(x,y-1,cg) == c) jumpMove.add(new Position(x,y-2));
+        if(get(x-2,y-2,cg) == 1 && get(x-1,y-1,cg) == c) jumpMove.add(new Position(x-2,y-2));
+        if(get(x-2,y,cg) == 1 && get(x-1,y,cg) == c) jumpMove.add(new Position(x-2,y));
+        if(get(x-2,y+2,cg) == 1 && get(x-1,y+1,cg) == c) jumpMove.add(new Position(x-2,y+2));
+        if(get(x,y+2,cg) == 1 && get(x,y+1,cg) == c) jumpMove.add(new Position(x,y+2));
+        if(get(x+2,y+2,cg) == 1 && get(x+1,y+1,cg) == c) jumpMove.add(new Position(x+2,y+2));
         return jumpMove;
     }
    
     public void getAllJumpMovesUtil(CamelotGame cg)
     {
+        int flag = 0;
         ArrayList<Position> temp;
         Position tempPos = new Position(pos);
         int i,x,y,z,c;
         markInHash(pos);
         
-        temp = getNextJumpMoves();/*
+        temp = getNextJumpMoves(cg);/*
         System.out.println("start jump\n");
         for(i=0;i<temp.size();i++)
         System.out.println(temp.get(i).toString());
@@ -275,7 +276,15 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();
@@ -286,11 +295,12 @@ public class Piece {
     }
     public void getAllCanterMovesUtil(CamelotGame cg)
     {
+        int flag=0;
         ArrayList<Position> temp;
         Position tempPos = new Position(pos);
         int i,x,y,z,c;
         markInHash(pos);
-        temp = getNextCanterMoves();/*
+        temp = getNextCanterMoves(cg);/*
         System.out.println("start canter\n");
         for(i=0;i<temp.size();i++)
         System.out.println(temp.get(i).toString());
@@ -299,19 +309,25 @@ public class Piece {
         for(i=0;i<temp.size();i++)
         {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
-            //if(tempMove.checkMove(cg) == 1)
+            if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-           // else System.out.println("wrong move");
+            else {
+                System.out.println("wrong canter canter jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllCanterMovesUtil(cg);
             tempMove.popBack();
         }
         if(isKnight == 1)
         {
-         pos = new Position(tempPos);
-         temp = getNextJumpMoves();
-        
-        /*
+            pos = new Position(tempPos);
+        temp = getNextJumpMoves(cg);/*
         System.out.println("start jump\n");
         for(i=0;i<temp.size();i++)
         System.out.println(temp.get(i).toString());
@@ -325,9 +341,9 @@ public class Piece {
             c = hash[z];
             hash[z] = 1;
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
-        //    if(tempMove.checkMove(cg) == 1)
+            if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-        //    else System.out.println("wrong move");
+            else System.out.println("wrong move");
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();
@@ -340,6 +356,7 @@ public class Piece {
     }
     public void getAllMovesUtil(CamelotGame cg)
     {
+        int flag = 0;
         Position tempPos = new Position(pos);
         tempMove.chance.add(new Position(pos));
         tempMove.chanceCnt++;
@@ -347,30 +364,49 @@ public class Piece {
         int i,x,y,z,c;
         temp = new ArrayList<Position>();
         markInHash(pos);
-        temp = getNextPlainMoves(); 
+        temp = getNextPlainMoves(cg); /*
+        System.out.println("start plain\n");
+        for(i=0;i<temp.size();i++)
+        System.out.println(temp.get(i).toString());
+        System.out.println("plain\n");*/
            
         for(i=0;i<temp.size();i++)
         {
-            tempMove.chance.add(new Position(temp.get(i)));
-            tempMove.chanceCnt++;
+            tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             validMoves.add(new Move(tempMove));
             tempMove.popBack();
         }
         
-        temp = getNextCanterMoves();
+        temp = getNextCanterMoves(cg);/*
+        System.out.println("start canter\n");
+        for(i=0;i<temp.size();i++)
+        System.out.println(temp.get(i).toString());
+        System.out.println("canter\n");*/
         
         for(i=0;i<temp.size();i++)
         {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong canter and/or jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllCanterMovesUtil(cg);
             tempMove.popBack();
         }
         pos = new Position(tempPos);
-        temp = getNextJumpMoves();
+        temp = getNextJumpMoves(cg);/*
+        System.out.println("start jump\n");
+        for(i=0;i<temp.size();i++)
+        System.out.println(temp.get(i).toString());
+        System.out.println("jump\n");*/
         
         for(i=0;i<temp.size();i++)
         {
@@ -383,7 +419,15 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();

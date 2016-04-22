@@ -7,7 +7,7 @@ package camelot.game;
 
 /**
  *
- * @author Abhishek
+ * @author aakashtyagi
  */
 public class MinMaxResult {
     
