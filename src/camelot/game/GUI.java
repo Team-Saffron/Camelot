@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -33,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -156,12 +158,14 @@ public class GUI extends JFrame implements MouseListener{
                 button.addMouseListener(this);
             }
         }
-        
+        JButton btn;
+        btn = JButtonArr[0][0];
+        btn.setBackground(Color.GREEN);
         
         
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.getHSBColor(0, 40, 70));
-       
+        //panel.setBackground(Color.getHSBColor(0, 40, 70));
+        panel.setBackground(Color.CYAN);
         
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
@@ -175,9 +179,12 @@ public class GUI extends JFrame implements MouseListener{
         panel.add(picLabel, constraints);
         constraints.gridwidth = 1;
         JLabel playerName = new JLabel("  Player Name:");
+       
         constraints.gridy = 1;
         panel.add(playerName, constraints);
+        constraints.gridx = 1;
         textPlayerName= new JTextField(17);
+     
         panel.add(textPlayerName, constraints);
         constraints.gridx = 0;
         constraints.gridy = 2;
@@ -186,7 +193,9 @@ public class GUI extends JFrame implements MouseListener{
         panel.add(updateBtn, constraints);
         JLabel labelTurn = new JLabel("Turn");
         textTurn = new JTextField(17);
-        textTurn.setText("AI");
+        textTurn.setHorizontalAlignment(SwingConstants.CENTER);
+        textTurn.setFont(new Font("Times New Roman",1, 13));
+        textTurn.setText("A I");
         constraints.gridy = 3;
         panel.add(labelTurn,constraints);
         constraints.gridx = 1;
@@ -197,6 +206,8 @@ public class GUI extends JFrame implements MouseListener{
         panel.add(labelLastMove,constraints);
         constraints.gridx = 1;
         textMove = new JTextField(17);
+        textMove.setHorizontalAlignment(SwingConstants.CENTER);
+        textMove.setFont(new Font("Times New Roman",1, 13));
         panel.add(textMove,constraints);
         constraints.gridx = 0;
         constraints.gridy = 5;
@@ -204,6 +215,8 @@ public class GUI extends JFrame implements MouseListener{
         panel.add(labelResult,constraints);
         constraints.gridx = 1;
         textResult=new JTextField(17);
+        textResult.setHorizontalAlignment(SwingConstants.CENTER);
+        textResult.setFont(new Font("Times New Roman",1, 13));
         panel.add(textResult,constraints);
         /*
         JLabel AIDeadPieces = new JLabel("AI Dead Pieces");
@@ -235,13 +248,13 @@ public class GUI extends JFrame implements MouseListener{
         pane.add(guiObj);
         
         
-        JButton btn;
+       
         btn = JButtonArr[1][1];
         btn.setText("Cancel");
         btn = JButtonArr[2][1];
-        btn.setText("U");
+        btn.setText("Undo");
         btn = JButtonArr[3][1];
-        btn.setText("AI");
+        btn.setText("AI Move");
                 
     }
     

@@ -194,9 +194,11 @@ public class Move {
     {
         String str = new String();
         int i;
+        char ch;
         for(i=0;i<chanceCnt;i++)
         {
-            str = str + (chance.get(i).row + ":"  + chance.get(i).col + " ");
+            ch = (char) (65 + (chance.get(i).row- 1));
+            str = str + (" " + ch  + chance.get(i).col );
         }
         return str;
     }
