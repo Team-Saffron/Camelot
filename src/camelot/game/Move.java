@@ -5,8 +5,13 @@
  */
 package camelot.game;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Timer;
 
 
 /**
@@ -97,31 +102,11 @@ public class Move {
         return 0;
     }
     
-    public ArrayList<Piece> executeMove(CamelotGame cg)
+    public ArrayList<Piece> executeMove(CamelotGame cg, int realMove)
     {
         String[][] grid = new String[17][13];
         int i,j;
-        /*
-        for(i=1;i<=16;i++)
-        {
-            for(j=1;j<=12;j++)
-            {
-                grid[i][j] = new String();
-                if(cg.grid[i][j].empty == 0)
-                    grid[i][j] = cg.grid[i][j].piece.id;
-                else if(cg.grid[i][j].valid == 1)
-                    grid[i][j] = "1 ";
-                else grid[i][j] = "0 ";
-            }
-        }
-        for(i=1;i<=16;i++)
-        {
-            for(j=1;j<=12;j++)
-                System.out.print(grid[i][j] + " ");
-            System.out.print("\n");
-        }
-                
-        display();*/
+       
         Piece p,deadPiece;
         ArrayList<Piece> deadPieceList = new ArrayList<Piece>();
         int x,y,x2,y2;
@@ -145,7 +130,28 @@ public class Move {
            for(i=1;i<chanceCnt;i++)
            {
                p.bug = new String("okay");
-               deadPiece = p.executeNextMove(chance.get(i),cg);
+               deadPiece = p.executeNextMove(chance.get(i), cg);
+               if(realMove == 1)
+               {
+                   Timer timer = new Timer(1000,new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        cg.gui.refreshGridUtil(cg);
+                        cg.gui.repaint();
+                    }
+                });
+                  timer.setRepeats(true);
+                  timer.start();
+                 synchronized(this)
+                 {
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                 }
+                   
+               }
                if(p.bug == "error")
                {
                    System.out.println("\nerroneous move : ");

@@ -271,7 +271,7 @@ public class CamelotGame {
             //System.out.println("\ncorrect move");
             //System.out.println("yes " + "cnt = " + cnt);
             
-            deadPieceList=move.executeMove(this);
+            deadPieceList=move.executeMove(this, realMove);
             if(turn == 0) turn = 1;
             else turn = 0;
             //gui.refreshGridUtil(this);
@@ -307,7 +307,7 @@ public class CamelotGame {
             if(m.checkMove(this) == 1)
             {
                 System.out.println("\ncorrect move\n");
-                m.executeMove(this);
+                m.executeMove(this, 1);
                 if(turn == 0) turn = 1;
                 else turn = 0;
                 gui.refreshGrid(this);
@@ -435,15 +435,15 @@ public class CamelotGame {
         double temp = 0.0;
         if(minWhiteSCastle > minBlackOppCastle)
         {
-            temp -= 10000.0;
+            temp -= 500.0;
         }
         if(minBlackSCastle > minWhiteOppCastle)
         {
-            temp += 10000.0;
+            temp += 500.0;
         }
-        avgCastleDist = (castleDistWhite + (2*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(2*minBlackOppCastle))/(pieceCntBlack+1);
+        avgCastleDist = (castleDistWhite + (8*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(8*minBlackOppCastle))/(pieceCntBlack+1);
         diff = pieceCntWhite - pieceCntBlack;
-        res = diff*100 - avgCastleDist;
+        res = diff*50 - avgCastleDist;
         return temp + res;
     }
 

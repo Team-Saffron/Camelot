@@ -88,7 +88,7 @@ public class Piece {
             }
             else return 0;
         }
-        if(str == "canter")
+        if("canter".equals(str))
         {
             if(plainMove == 1 || jump == 1)
             {
@@ -121,7 +121,8 @@ public class Piece {
                     return 0;
                 }
                 else{
-                    jump = 1;return 1;
+                    jump = 1;
+                    return 1;
                 }
             }
         }
@@ -132,7 +133,7 @@ public class Piece {
     {
         String str = new String();
         int x,y,x2,y2;
-        str = getMoveType(pos,p,cg);
+        str = getMoveType(pos, p, cg);
         //System.out.println(str);
         x = pos.row;y = pos.col;x2 = p.row;y2 = p.col;
         cg.grid[x][y].piece = null;
