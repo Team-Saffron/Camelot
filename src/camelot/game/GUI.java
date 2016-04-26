@@ -84,7 +84,7 @@ public class GUI extends JFrame implements MouseListener{
             int i,j;
             
             
-            move = MiniMax.Maxi(3,game).move;                     // AI move
+            move = MiniMax.Maxi(3, game).move;                     // AI move
             game.display();
             move.display();
             deadPieceList=game.singleMove(move,1);

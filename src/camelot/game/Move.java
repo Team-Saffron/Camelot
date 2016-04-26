@@ -131,27 +131,7 @@ public class Move {
            {
                p.bug = new String("okay");
                deadPiece = p.executeNextMove(chance.get(i), cg);
-               if(realMove == 1)
-               {
-                   Timer timer = new Timer(1000,new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cg.gui.refreshGridUtil(cg);
-                        cg.gui.repaint();
-                    }
-                });
-                  timer.setRepeats(true);
-                  timer.start();
-                 synchronized(this)
-                 {
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                 }
-                   
-               }
+             
                if(p.bug == "error")
                {
                    System.out.println("\nerroneous move : ");
