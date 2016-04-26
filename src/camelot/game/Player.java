@@ -12,12 +12,13 @@ package camelot.game;
 public class Player {
     public String name;
     public int castleMoves;
-    public int piecesLeft;
+    public int piecesLeft, deadPawnCount, deadKnightCount;
     
     public Player()
     {
         name = "Guest";
         castleMoves = 0;piecesLeft = 14;
+        deadPawnCount = deadKnightCount = 0;
     }
     
     public Player(String str)

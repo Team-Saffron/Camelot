@@ -46,9 +46,11 @@ import javax.swing.border.Border;
 public class GUI extends JFrame implements MouseListener{
     
     public JButton[][] JButtonArr;
+    int deadBlackKnight, deadBlackPawn, deadWhiteKnight, deadWhitePawn;
     ImageIcon blackPawn,blackKnight,whitePawn,whiteKnight,castle1,castle2;
     JTextField textTurn,textMove,textResult,textPlayerName;
     JButton updateBtn;
+    public JButton[][] AIDeadPiece, PlayerDeadPiece;
     public int moveFlag;
     public CamelotGame game;
     public ArrayList<Piece> deadPieceList;
@@ -82,7 +84,6 @@ public class GUI extends JFrame implements MouseListener{
             deadPieceList = new ArrayList<Piece>();
             Piece piece;
             int i,j;
-            
             
             move = MiniMax.Maxi(3, game).move;                     // AI move
             game.display();
@@ -131,6 +132,8 @@ public class GUI extends JFrame implements MouseListener{
     public GUI(int rows, int cols) {
         moveFlag = 0;
         JButtonArr = new JButton[rows+1][cols+1];
+        AIDeadPiece = new JButton[2][7];
+        PlayerDeadPiece = new JButton[2][7];
         blackPawn = new ImageIcon("src/images/blackPawn.png");
         whitePawn = new ImageIcon("src/images/whitePawn.png");
         blackKnight = new ImageIcon("src/images/blackKnight.png");
@@ -169,7 +172,7 @@ public class GUI extends JFrame implements MouseListener{
         
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
-        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.insets = new Insets(5, 5, 5, 5);
         constraints.gridx = 0;
         constraints.gridy = 0; 
         constraints.gridwidth = 2;
@@ -214,36 +217,48 @@ public class GUI extends JFrame implements MouseListener{
         JLabel labelResult = new JLabel("Result");
         panel.add(labelResult,constraints);
         constraints.gridx = 1;
-        textResult=new JTextField(17);
+        textResult = new JTextField(17);
         textResult.setHorizontalAlignment(SwingConstants.CENTER);
         textResult.setFont(new Font("Times New Roman",1, 13));
-        panel.add(textResult,constraints);
-        /*
-        JLabel AIDeadPieces = new JLabel("AI Dead Pieces");
-        JLabel playerDeadPieces = new JLabel("Your Dead Pieces");
-        JButton[] AIPieces = new JButton[12];
-        JButton[] PlayerPieces = new JButton[12];
-        constraints.gridx = 0;constraints.gridy = 5;
-        panel.add(AIDeadPieces,constraints);
+        panel.add(textResult, constraints);
         constraints.gridy = 6;
-        for(i=0;i<6;i++)
-        {
-            AIPieces[i] = new JButton();
-            AIPieces[i].setPreferredSize(new Dimension(30,30));
-            panel.add(AIPieces[i],constraints);
-            constraints.gridx++;
-        }
+        constraints.gridx = 0;
         
-        constraints.gridy = 7;constraints.gridx = 0;
-        for(i=6;i<12;i++)
-        {
-            AIPieces[i] = new JButton();
-            AIPieces[i].setPreferredSize(new Dimension(30,30));
-            panel.add(AIPieces[i],constraints);
-            constraints.gridx++;
-        }
-        */
+        constraints.gridwidth = 2;
+        JLabel AIDeadPieces = new JLabel("AI Dead Pieces");
+        panel.add(AIDeadPieces, constraints);
+        constraints.gridy = 7;
+        JLabel playerDeadPieces = new JLabel("Your Dead Pieces");
+        JPanel AILayout = new JPanel(new GridLayout(2, 7));
+        JPanel PlayerLayout = new JPanel(new GridLayout(2, 7));
         
+        for(i=0; i<2; i++)
+        {
+            for(j=0; j<7; j++)
+            {
+                JButton button = new JButton();
+                button.setBackground(Color.white);
+                button.setPreferredSize(new Dimension(48, 48));
+                AIDeadPiece[i][j] = button;
+                AILayout.add(button);
+            }
+        }
+        panel.add(AILayout, constraints);
+        constraints.gridy = 8;
+        panel.add(playerDeadPieces, constraints);
+        constraints.gridy = 9;
+        for(i=0; i<2; i++)
+        {
+            for(j=0; j<7; j++)
+            {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(48, 48));
+                button.setBackground(Color.white);
+                PlayerDeadPiece[i][j] = button;
+                PlayerLayout.add(button);
+            }
+        }
+        panel.add(PlayerLayout, constraints);
         guiObj.add(panel,BorderLayout.WEST);
         pane.add(guiObj);
         
@@ -339,6 +354,8 @@ public class GUI extends JFrame implements MouseListener{
         int i,j;
         JButton btn;
         Piece pc;
+        deadWhiteKnight = deadBlackKnight = 4;
+        deadWhitePawn = deadBlackPawn = 10;
         for(i=1;i<=16;i++)
         {
             for(j=1;j<=12;j++)
@@ -356,10 +373,26 @@ public class GUI extends JFrame implements MouseListener{
                     cg.grid[i][j].empty = 0;
                     if(pc.isKnight == 1)
                     {
+                        if(pc.color == 0)
+                        {
+                            deadWhiteKnight--;
+                        }
+                        else
+                        {
+                            deadBlackKnight--;
+                        }
                         System.out.print("K" + pc.color + " ");
                     }
                     else
                     {
+                        if(pc.color == 0)
+                        {
+                            deadWhitePawn--;
+                        }
+                        else
+                        {
+                            deadBlackPawn--;
+                        }
                         System.out.print("P"+ pc.color + " ");
                     }
                     assignPiece(btn, pc);
@@ -380,11 +413,7 @@ public class GUI extends JFrame implements MouseListener{
                 }
             }
             System.out.print("\n");
-        }
-        for(i=0; i<10000000; i++);
-        
-        
-        
+        }    
     }
     
     void updateInfoPanel()
@@ -395,7 +424,58 @@ public class GUI extends JFrame implements MouseListener{
         }
         else textTurn.setText(game.player2.name);
         
-        textMove.setText(move.toString());
+        textMove.setText( move.toString());
+        int i, j;
+        for(i=0; i<2; i++)
+        {
+            for(j=0; j<7; j++)
+            {
+                if(deadWhiteKnight > 0)
+                {
+                  AIDeadPiece[i][j].setIcon(whiteKnight);
+                  deadWhiteKnight--;
+                }
+                else if(deadWhitePawn > 0)
+                {
+                  AIDeadPiece[i][j].setIcon(whitePawn);
+                  deadWhitePawn--;  
+                }
+                else
+                {
+                    AIDeadPiece[i][j].setIcon(null);
+                }
+            }
+        }
+        for(i=0; i<2; i++)
+        {
+            for(j=0; j<7; j++)
+            {
+                if(deadBlackKnight > 0)
+                {
+                  PlayerDeadPiece[i][j].setIcon(blackKnight);
+                  deadBlackKnight--;
+                }
+                else if(deadBlackPawn > 0)
+                {
+                  PlayerDeadPiece[i][j].setIcon(blackPawn);
+                  deadBlackPawn--;  
+                }
+                else
+                {
+                    PlayerDeadPiece[i][j].setIcon(null);
+                }
+            }
+        }
+        for(i=0; i<move.chanceCnt-1; i++)
+        {
+            JButton btn = JButtonArr[move.chance.get(i).row][move.chance.get(i).col];
+            
+            Border loweredbevel = BorderFactory.createBevelBorder(1, Color.RED, Color.RED);
+            Border raisedbevel = BorderFactory.createBevelBorder(2, Color.RED, Color.RED);
+            Border compound = BorderFactory.createCompoundBorder(
+                          raisedbevel, loweredbevel);
+            btn.setBorder(compound);
+        }
         
         if(game.winner!=-1)
         {
