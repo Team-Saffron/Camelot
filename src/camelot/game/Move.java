@@ -4,15 +4,11 @@
  * and open the template in the editor.
  */
 package camelot.game;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Timer;
-
 
 /**
  *
@@ -74,7 +70,7 @@ public class Move {
             //System.out.println("h");
             return 0;
         }
-        //System.out.println("h1" + p.color + cg.turn);
+      
         refreshPiece(p);
         if(cg.turn == p.color)
         {
@@ -118,12 +114,16 @@ public class Move {
         p.pos = new Position(x,y);
         if(p.jump == 0)
         {
+           
             cg.grid[x][y].piece = null;
             cg.grid[x][y].empty = 1;
             refreshPiece(p);
+            
+            
             p.pos = new Position(x2,y2);
             cg.grid[x2][y2].piece = p; 
             cg.grid[x2][y2].empty = 0;
+            cg.gui.repaint();
         }
         else
         {
@@ -137,7 +137,7 @@ public class Move {
                    System.out.println("\nerroneous move : ");
                    for(i=1;i<=16;i++)
                    {
-                       for(j=1;j<=12;j++)
+                       for(j=1; j<=12; j++)
                            System.out.print(grid[i][j] + " ");
                        System.out.print("\n");
                    }
@@ -147,6 +147,7 @@ public class Move {
                {
                    deadPieceList.add(new Piece(deadPiece));
                }
+              
            }
            cg.grid[x][y].piece = null;
            cg.grid[x][y].empty = 1;
@@ -154,6 +155,8 @@ public class Move {
             p.pos = new Position(x2,y2);
            cg.grid[x2][y2].piece = p;
            cg.grid[x2][y2].empty = 0;
+           
+          
         }
         return deadPieceList;
     }

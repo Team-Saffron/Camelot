@@ -18,25 +18,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 /**
@@ -121,14 +114,40 @@ public class GUI extends JFrame implements MouseListener{
                             deadPieceList=game.singleMove(move,1);
                             refreshGridUtil(game);
                             updateInfoPanel();
+                            this.repaint();
+                            this.revalidate();
+                            int delay = 1000; //milliseconds
+                            ActionListener taskPerformer = new ActionListener() {
+                                public void actionPerformed(ActionEvent evt) {
+                                    AIMove();
+                                }
+                            };
+                            Timer t = new Timer(delay, taskPerformer);
+                            t.setRepeats(false);
+                            t.start();
+                            
                         }
                     
                     }
                 }
             }
+           
         }
     }
-    
+    void AIMove()
+    {
+          move = new Move();
+            deadPieceList = new ArrayList<Piece>();
+            Piece piece;
+            int i,j;
+            
+            move = MiniMax.Maxi(3, game).move;                     // AI move
+            game.display();
+            move.display();
+            deadPieceList=game.singleMove(move,1);
+            refreshGridUtil(game);
+            updateInfoPanel();
+    }
     public GUI(int rows, int cols) {
         moveFlag = 0;
         JButtonArr = new JButton[rows+1][cols+1];
@@ -269,7 +288,8 @@ public class GUI extends JFrame implements MouseListener{
         btn = JButtonArr[2][1];
         btn.setText("Undo");
         btn = JButtonArr[3][1];
-        btn.setText("AI Move");
+        btn.setText("Start");
+        
                 
     }
     
@@ -280,6 +300,7 @@ public class GUI extends JFrame implements MouseListener{
         this.pack();
         this.setVisible(true);
         this.setAlwaysOnTop(true);
+      
     }
     
     public void refreshGrid(CamelotGame cg)
@@ -402,6 +423,7 @@ public class GUI extends JFrame implements MouseListener{
                     if ( cg.grid[i][j].castle == 0)
                     {
                         btn.setIcon(null);
+                        
                         System.out.print(". ");
                         
                     }
@@ -474,6 +496,14 @@ public class GUI extends JFrame implements MouseListener{
             Border raisedbevel = BorderFactory.createBevelBorder(2, Color.RED, Color.RED);
             Border compound = BorderFactory.createCompoundBorder(
                           raisedbevel, loweredbevel);
+            if(i == 0)
+            {
+                loweredbevel = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE);
+                raisedbevel = BorderFactory.createBevelBorder(2, Color.BLUE, Color.BLUE);
+                compound = BorderFactory.createCompoundBorder(
+                              raisedbevel, loweredbevel);
+            }
+           
             btn.setBorder(compound);
         }
         

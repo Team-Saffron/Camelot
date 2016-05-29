@@ -7,10 +7,6 @@ package camelot.game;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author aakashtyagi
- */
 public class MiniMax {
     static double INF = 1000000000;
     
@@ -31,7 +27,6 @@ public class MiniMax {
                 {
                     if(piece.color == 1)
                     Merge(moveList, piece.getAllMoves(cg));
-                    //moveList.addAll(piece.getAllMoves(cg));
                 }
             }
         }
@@ -82,16 +77,13 @@ public class MiniMax {
                 }
             }
         }
-        //if(depth == 1)
-        System.out.println("MoveSize" + moveList.size());
-        
+      
         // Applying Max algo on obtained Moves
         
         for(Move move : moveList)
         {
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
-            deadPieces = cg.singleMove(move,0); 
-            //deadPieces = cg.singleMove(move);            
+            deadPieces = cg.singleMove(move,0);            
             MinMaxResult tempres = alphaBetaMin(alpha,beta,depth-1, cg);
             
             if(tempres.val >= beta)

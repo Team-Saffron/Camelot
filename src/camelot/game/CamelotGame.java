@@ -318,19 +318,7 @@ public class CamelotGame {
         }
         declareWinner();
     }
-    
-    public static void main(String[] args) {
-        // TODO code application logic here
-        CamelotGame game ;
-        
-        game = new CamelotGame();
-        game.gui.init(game);
-        game.gui.refreshGrid(game);
-        game.display();
-        //game.play();
-        //game.display();
-    }
-    
+   
     double distToCastle(int i,int j,int color)
     {
         double dist = 0;
@@ -475,8 +463,19 @@ public class CamelotGame {
         grid[x][y].setPiece(pc);
         grid[x][y].empty = 0;
         turn = (turn == 0 ? 1 : 0);
-        //display();
-        //gui.refreshGridUtil(this);
     }
+     
+    public static void main(String[] args) {
+        // TODO code application logic here
+        CamelotGame game ;
+        
+        game = new CamelotGame();
+        game.gui.init(game);
+        game.gui.refreshGrid(game);
+        game.display();
+        //game.play();
+        //game.display();
+    }
+    
     
 }
